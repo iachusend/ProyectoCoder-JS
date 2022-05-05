@@ -1,5 +1,5 @@
 let cantidadPlata = 0;
-
+let headerPrincipal = document.getElementById("headerPrincipal")
 pedirCredito()
 
 function pedirCredito(){
@@ -56,14 +56,14 @@ function seleccionarCredito() {
 function montoPedido() {
     if(cantidadPlata > 10000){
         alert("Se ha exedido del monto maximo que se puede solicitar")
-    } else {
-        alert("retiraste " + cantidadPlata + " pesos")
+    } else {    
+        headerPrincipal.innerHTML = `retiraste ${cantidadPlata} pesos`
     }
     seleccionarCredito()
 }
 
 function consultarSaldoCuenta() {
-    alert("Actualmente tiene ingresados " + cantidadPlata + " pesos")
+    headerPrincipal.innerHTML = (`Actualmente tiene ingresados ${cantidadPlata} pesos`)
     seleccionarCredito()
 }
 
@@ -75,4 +75,3 @@ function salir() {
     alert("Usted ha finalizado sus operacion bancarias")
     seleccionarCredito()
 }
-
