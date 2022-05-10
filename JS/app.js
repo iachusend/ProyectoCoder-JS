@@ -75,3 +75,6 @@ function salir() {
     alert("Usted ha finalizado sus operacion bancarias")
     seleccionarCredito()
 }
+
+let input1 = document.getElementById("cuotas")
+input1.onkeyup = () => {console.log(document.getElementById("cuotas").value)}
