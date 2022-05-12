@@ -1,80 +1,108 @@
-let cantidadPlata = 0;
-let headerPrincipal = document.getElementById("headerPrincipal")
-pedirCredito()
+const formulario = document.getElementById('formulario');
+const inputs = document.querySelectorAll('#formulario input');
 
-function pedirCredito(){
-    let prestamo = confirm("Ingrese Usuario")
-    ingresarUsuario(prestamo)
+const expresiones = {
+	usuario: /^[a-zA-Z0-9\_\-]{4,16}$/, // Letras, numeros, guion y guion_bajo
+	nombre: /^[a-zA-ZÀ-ÿ\s]{1,40}$/, // Letras y espacios, pueden llevar acentos.
+	password: /^.{4,12}$/, // 4 a 12 digitos.
+	correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+	telefono: /^\d{7,14}$/ // 7 a 14 numeros.
 }
 
-function ingresarUsuario(us){
-    if(us){
-        let usuario = prompt("Ingrese su usuario");
-        validarUsuario(usuario)
-    }else {
-        alert("Es necesario ingresar el usuario")
-    }
+const campos = {
+	usuario: false,
+	nombre: false,
+	password: false,
+	correo: false,
+	telefono: false
 }
 
-function validarUsuario(u){
-    if(u === "coder"){
-        seleccionarCredito()
-    }else {
-        alert("Usuario incorrecto")
-    }
-    ingresarUsuario()
+const validarFormulario = (e) => {
+	switch (e.target.name) {
+		case "usuario":
+			validarCampo(expresiones.usuario, e.target, 'usuario');
+		break;
+		case "nombre":
+			validarCampo(expresiones.nombre, e.target, 'nombre');
+		break;
+		case "password":
+			validarCampo(expresiones.password, e.target, 'password');
+			validarPassword2();
+		break;
+		case "password2":
+			validarPassword2();
+		break;
+		case "correo":
+			validarCampo(expresiones.correo, e.target, 'correo');
+		break;
+		case "telefono":
+			validarCampo(expresiones.telefono, e.target, 'telefono');
+		break;
+	}
 }
 
-function seleccionarCredito() {
-    console.log("1: Pedir prestamo");
-    console.log("2: Ver cuenta")
-    console.log("3: Calcular total")
-    console.log("4: Salir de la cuenta")
-    console.log("------------------------")
-    
-    let opc = prompt("Ingresar Opcion")
-    switch(opc){
-        case "1":
-            cantidadPlata = Number(prompt("Cantidad pedida"))
-            montoPedido(cantidadPlata)
-            break;
-        case "2": 
-            consultarSaldoCuenta()
-            break;
-        case "3": 
-            calcularTotal();
-            break;
-        case "4":
-            salir();
-            break;
-        default:
-            console.log("Peticion Incorrecta")
-            break;
-    }
+const validarCampo = (expresion, input, campo) => {
+	if(expresion.test(input.value)){
+		document.getElementById(`grupo__${campo}`).classList.remove('formulario__grupo-incorrecto');
+		document.getElementById(`grupo__${campo}`).classList.add('formulario__grupo-correcto');
+		document.querySelector(`#grupo__${campo} i`).classList.add('fa-check-circle');
+		document.querySelector(`#grupo__${campo} i`).classList.remove('fa-times-circle');
+		document.querySelector(`#grupo__${campo} .formulario__input-error`).classList.remove('formulario__input-error-activo');
+		campos[campo] = true;
+	} else {
+		document.getElementById(`grupo__${campo}`).classList.add('formulario__grupo-incorrecto');
+		document.getElementById(`grupo__${campo}`).classList.remove('formulario__grupo-correcto');
+		document.querySelector(`#grupo__${campo} i`).classList.add('fa-times-circle');
+		document.querySelector(`#grupo__${campo} i`).classList.remove('fa-check-circle');
+		document.querySelector(`#grupo__${campo} .formulario__input-error`).classList.add('formulario__input-error-activo');
+		campos[campo] = false;
+	}
 }
 
-function montoPedido() {
-    if(cantidadPlata > 10000){
-        alert("Se ha exedido del monto maximo que se puede solicitar")
-    } else {    
-        headerPrincipal.innerHTML = `retiraste ${cantidadPlata} pesos`
-    }
-    seleccionarCredito()
+const validarPassword2 = () => {
+	const inputPassword1 = document.getElementById('password');
+	const inputPassword2 = document.getElementById('password2');
+
+	if(inputPassword1.value !== inputPassword2.value){
+		document.getElementById(`grupo__password2`).classList.add('formulario__grupo-incorrecto');
+		document.getElementById(`grupo__password2`).classList.remove('formulario__grupo-correcto');
+		document.querySelector(`#grupo__password2 i`).classList.add('fa-times-circle');
+		document.querySelector(`#grupo__password2 i`).classList.remove('fa-check-circle');
+		document.querySelector(`#grupo__password2 .formulario__input-error`).classList.add('formulario__input-error-activo');
+		campos['password'] = false;
+	} else {
+		document.getElementById(`grupo__password2`).classList.remove('formulario__grupo-incorrecto');
+		document.getElementById(`grupo__password2`).classList.add('formulario__grupo-correcto');
+		document.querySelector(`#grupo__password2 i`).classList.remove('fa-times-circle');
+		document.querySelector(`#grupo__password2 i`).classList.add('fa-check-circle');
+		document.querySelector(`#grupo__password2 .formulario__input-error`).classList.remove('formulario__input-error-activo');
+		campos['password'] = true;
+	}
 }
 
-function consultarSaldoCuenta() {
-    headerPrincipal.innerHTML = (`Actualmente tiene ingresados ${cantidadPlata} pesos`)
-    seleccionarCredito()
-}
+inputs.forEach((input) => {
+	input.addEventListener('keyup', validarFormulario);
+	input.addEventListener('blur', validarFormulario);
+});
 
-function calcularTotal() {
-    alert(`Su total a pagar será de ${cantidadPlata * 1.35}`)
-}
+formulario.addEventListener('submit', (e) => {
+	e.preventDefault();
 
-function salir() {
-    alert("Usted ha finalizado sus operacion bancarias")
-    seleccionarCredito()
-}
+	const terminos = document.getElementById('terminos');
+	if(campos.usuario && campos.nombre && campos.password && campos.correo && campos.telefono && terminos.checked ){
+		formulario.reset();
 
-let input1 = document.getElementById("cuotas")
-input1.onkeyup = () => {console.log(document.getElementById("cuotas").value)}
+		document.getElementById('formulario__mensaje-exito').classList.add('formulario__mensaje-exito-activo');
+		setTimeout(() => {
+			document.getElementById('formulario__mensaje-exito').classList.remove('formulario__mensaje-exito-activo');
+		}, 5000);
+
+		document.querySelectorAll('.formulario__grupo-correcto').forEach((icono) => {
+			icono.classList.remove('formulario__grupo-correcto');
+		});
+
+		formsCuotas()
+	} else {
+		document.getElementById('formulario__mensaje').classList.add('formulario__mensaje-activo');
+	}
+});
