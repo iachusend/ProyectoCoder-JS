@@ -93,10 +93,26 @@
 				<p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
 			</div>
 		</form>
+		<section>
+				<button id="myBtn">Click me</button>
+		</section>
 	</main>
 
 
-	<script src="JS/main.js"></script>
+	<script src="JS/app.js"></script>
 	<script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
+	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	<script>
+		const btn = document.querySelector('myBtn')
+		btn.addEventListener('click', () => {
+		Swal.fire({
+		title: 'Genial!',
+		text: 'Haz clickeado el botón!',
+		icon: 'success',
+		confirmButtonText: 'Cool'
+		})
+		})
+	</script>
 </body>
 </html>
